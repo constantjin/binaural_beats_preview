@@ -1,6 +1,18 @@
 import React, { useState } from "react";
-import { initBeat, playBeat, stopBeat } from "../utils/beats";
-import { useStore, setPlayingState, setChecked } from "../stores";
+import {
+  initBeat,
+  playBeat,
+  stopBeat,
+  playAndStopCarSound,
+} from "../utils/beats";
+import {
+  useStore,
+  setPlayingState,
+  setChecked,
+  setBinaural,
+  markListened,
+} from "../stores";
+import car_dummy from "../sounds/car_dummy.wav";
 
 export default function BeatButton({ hertz, freq }) {
   const [listened, setListened] = useState(false);
@@ -13,9 +25,11 @@ export default function BeatButton({ hertz, freq }) {
     if (event.target.checked) {
       setThisChecked(true);
       setChecked(true);
+      setBinaural(hertz, freq);
     } else {
       setThisChecked(false);
       setChecked(false);
+      setBinaural(0, 0);
     }
   };
 
@@ -35,19 +49,21 @@ export default function BeatButton({ hertz, freq }) {
     <div className="m-5">
       <button
         className="h-10 px-3 border-2 rounded-lg"
-        onClick={(e) => {
+        onClick={async (e) => {
           e.preventDefault();
           if (!globalIsPlaying) {
             initBeat(hertz, freq);
             setPlayingState(true);
             setThisPlaying(true);
             playBeat();
-            setTimeout(() => {
+            await playAndStopCarSound(car_dummy);
+            if (!listened) {
               setListened(true);
-              stopBeat();
-              setPlayingState(false);
-              setThisPlaying(false);
-            }, 10000);
+              markListened();
+            }
+            stopBeat();
+            setPlayingState(false);
+            setThisPlaying(false);
           } else {
             console.log("One beat is currently playing!");
           }
