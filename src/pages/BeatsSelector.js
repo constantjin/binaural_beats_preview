@@ -3,6 +3,7 @@ import { useHistory } from "react-router-dom";
 import BeatButton from "../components/BeatButton";
 import Button from "../components/Button";
 import { initStore, useStore } from "../stores";
+import { stopBeat, stopLoopCarSound } from "../utils/beats";
 
 function shuffle(a) {
   for (let i = a.length - 1; i > 0; i--) {
@@ -27,13 +28,16 @@ export default function BeatsSelector() {
       setError("가장 긍정적인 소리에 체크해 주세요.");
     } else {
       setError("");
+      stopBeat();
+      stopLoopCarSound();
       history.push("/post_inst");
     }
   };
 
   useEffect(() => {
-    const hertzs = [300, 400, 500];
-    const freqs = [2, 4, 8, 16, 24, 40];
+    const hertzs = [400, 500];
+    // const freqs = [2, 4, 8, 16, 24, 40];
+    const freqs = [7, 10, 16, 40];
     let hertz_freq_pairs = hertzs.flatMap((h) => freqs.map((f) => [h, f]));
     shuffle(hertz_freq_pairs);
     setPairs(hertz_freq_pairs);

@@ -102,6 +102,24 @@ export async function playAndStopCarSound(sound_path) {
   }
 }
 
+export async function playAndEndCarSound(sound_path) {
+  try {
+    await _initCarSoundPromise(sound_path);
+    await _playAndStopCarSoundPromise();
+  } catch (e) {
+    console.error(e);
+  }
+}
+
+export function setLoopAndPlayCarSound() {
+  if (window.howlPlayer) {
+    console.info(`# DEBUG: Howler.js - a carsound was set to LOOP.`);
+    window.howlPlayer.loop(true);
+    console.info(`# DEBUG: Howler.js - a LOOP carsound is playing.`);
+    window.howlPlayer.play();
+  }
+}
+
 export async function playLoopCarSound(sound_path) {
   try {
     await _initCarSoundPromise(sound_path, true);
@@ -121,4 +139,12 @@ export function stopLoopCarSound() {
   window.howlPlayer.unload();
   window.howlPlayer = null;
   console.info(`# DEBUG: Howler.js - a LOOP carsound was unloaded.`);
+}
+
+export function checkCarSoundPlaying() {
+  if (!window.howlPlayer) {
+    return false;
+  } else {
+    return window.howlPlayer.playing();
+  }
 }

@@ -3,7 +3,10 @@ import {
   initBeat,
   playBeat,
   stopBeat,
-  playAndStopCarSound,
+  playAndEndCarSound,
+  setLoopAndPlayCarSound,
+  stopLoopCarSound,
+  checkCarSoundPlaying,
 } from "../utils/beats";
 import {
   useStore,
@@ -52,16 +55,20 @@ export default function BeatButton({ hertz, freq }) {
         onClick={async (e) => {
           e.preventDefault();
           if (!globalIsPlaying) {
+            if (checkCarSoundPlaying()) {
+              stopLoopCarSound();
+              stopBeat();
+            }
             initBeat(hertz, freq);
             setPlayingState(true);
             setThisPlaying(true);
             playBeat();
-            await playAndStopCarSound(car_dummy);
+            await playAndEndCarSound(car_dummy);
             if (!listened) {
               setListened(true);
               markListened();
             }
-            stopBeat();
+            setLoopAndPlayCarSound();
             setPlayingState(false);
             setThisPlaying(false);
           } else {
