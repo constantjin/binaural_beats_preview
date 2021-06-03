@@ -9,15 +9,34 @@ export default function PostRating() {
   const [valence, setValence] = useState(0);
   const [finished, setFinished] = useState(false);
   const [error, setError] = useState("");
+  const [remainingTime, setRemainingTime] = useState(20);
+  const [timeColor, setTimeColor] = useState("text-black");
+
   let history = useHistory();
   const timerID = useRef();
+
+  useEffect(() => {
+    timerID.current = setInterval(() => {
+      setRemainingTime((e) => e - 1);
+    }, 1000);
+  }, []);
+
+  useEffect(() => {
+    if (remainingTime <= 5) {
+      setTimeColor("text-red-500");
+    }
+    if (remainingTime === 0) {
+      clearInterval(timerID.current);
+      setFinished(true);
+    }
+  }, [remainingTime]);
 
   useEffect(() => {
     const submitRating = async () => {
       if (finished) {
         setError("");
         if (timerID.current) {
-          clearTimeout(timerID.current);
+          clearInterval(timerID.current);
         }
         history.push("/end");
       }
@@ -25,12 +44,6 @@ export default function PostRating() {
 
     submitRating();
   }, [finished, arousal, dominance, valence, history]);
-
-  useEffect(() => {
-    timerID.current = setTimeout(() => {
-      setFinished(true);
-    }, 10000);
-  }, []);
 
   useEffect(() => {
     if (!(arousal === 0 || dominance === 0 || valence === 0)) {
@@ -45,6 +58,11 @@ export default function PostRating() {
     <div>
       <span className="block font-medium tracking-wide text-red-500 text-base mt-1 text-center mb-3">
         {error}
+      </span>
+      <span
+        className={`block font-medium tracking-wide text-base text-left mb-3 ${timeColor}`}
+      >
+        {`0:${remainingTime}`}
       </span>
       <RatingScale
         ratingTitle="Arousal (자극적임)"
