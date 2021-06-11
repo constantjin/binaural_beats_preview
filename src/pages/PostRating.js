@@ -60,9 +60,9 @@ export default function PostRating() {
         {error}
       </span>
       <span
-        className={`block font-medium tracking-wide text-base text-left mb-3 ${timeColor}`}
+        className={`block font-medium tracking-wide text-lg text-left mb-3 ${timeColor}`}
       >
-        {`0:${remainingTime}`}
+        {`${remainingTime}초 남았습니다`}
       </span>
       <RatingScale
         ratingTitle="Arousal (자극적임)"

@@ -28,7 +28,7 @@ export default function PostInstruction() {
           <span>✔️</span> 응답은 <b>빠르고 정확하게</b> 해 주세요
         </li>
         <li>
-          <span>⏱️</span> <b>10초</b>간 미응답시 자동으로 넘어갑니다
+          <span>⏱️</span> <b>20초</b>간 미응답시 자동으로 넘어갑니다
         </li>
       </ul>
     </div>

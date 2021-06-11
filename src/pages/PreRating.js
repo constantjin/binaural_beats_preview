@@ -9,27 +9,33 @@ export default function PreRating() {
   const [valence, setValence] = useState(0);
   const [finished, setFinished] = useState(false);
   const [error, setError] = useState("");
-  const [elapsedTime, setElapsedTime] = useState(0);
+  const [remainingTime, setRemainingTime] = useState(20);
   const [timeColor, setTimeColor] = useState("text-black");
+  const [timeText, setTimeText] = useState(
+    "최대한 빠르고 정확하게 응답해 주세요."
+  );
 
   let history = useHistory();
   const timerID = useRef();
 
   useEffect(() => {
     timerID.current = setInterval(() => {
-      setElapsedTime((e) => e + 10);
-    }, 10000);
+      setRemainingTime((e) => e - 1);
+    }, 1000);
   }, []);
 
   useEffect(() => {
-    if (elapsedTime === 10) {
+    if (remainingTime === 10) {
       setTimeColor("text-red-300");
-    } else if (elapsedTime === 20) {
-      setTimeColor("text-red-400");
-    } else if (elapsedTime >= 30) {
+      setTimeText("10초 지났습니다.");
+    } else if (remainingTime <= 5 && remainingTime >= 1) {
       setTimeColor("text-red-500");
+      setTimeText(`${remainingTime}초 남았습니다.`);
+    } else if (remainingTime <= 0) {
+      clearInterval(timerID.current);
+      setFinished(true);
     }
-  }, [elapsedTime]);
+  }, [remainingTime]);
 
   useEffect(() => {
     const submitRating = async () => {
@@ -82,11 +88,9 @@ export default function PreRating() {
         />
       </div>
       <span
-        className={`block font-medium tracking-wide text-base mt-5 text-center mb-3 ${timeColor}`}
+        className={`block font-medium tracking-wide text-lg mt-5 text-center mb-3 ${timeColor}`}
       >
-        {elapsedTime > 0
-          ? `${elapsedTime}초 지났습니다.`
-          : "최대한 빠르고 정확하게 응답해 주세요."}
+        {timeText}
       </span>
     </div>
   );
