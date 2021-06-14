@@ -11,6 +11,9 @@ export default function PostRating() {
   const [error, setError] = useState("");
   const [remainingTime, setRemainingTime] = useState(20);
   const [timeColor, setTimeColor] = useState("text-black");
+  const [timeText, setTimeText] = useState(
+    "최대한 빠르고 정확하게 응답해 주세요."
+  );
 
   let history = useHistory();
   const timerID = useRef();
@@ -22,10 +25,13 @@ export default function PostRating() {
   }, []);
 
   useEffect(() => {
-    if (remainingTime <= 5) {
+    if (remainingTime === 10) {
+      setTimeColor("text-red-300");
+      setTimeText("10초 지났습니다.");
+    } else if (remainingTime <= 5 && remainingTime >= 1) {
       setTimeColor("text-red-500");
-    }
-    if (remainingTime === 0) {
+      setTimeText(`${remainingTime}초 남았습니다.`);
+    } else if (remainingTime <= 0) {
       clearInterval(timerID.current);
       setFinished(true);
     }
@@ -59,11 +65,6 @@ export default function PostRating() {
       <span className="block font-medium tracking-wide text-red-500 text-base mt-1 text-center mb-3">
         {error}
       </span>
-      <span
-        className={`block font-medium tracking-wide text-lg text-left mb-3 ${timeColor}`}
-      >
-        {`${remainingTime}초 남았습니다`}
-      </span>
       <RatingScale
         ratingTitle="Arousal (자극적임)"
         leftText="← 안정적"
@@ -86,6 +87,11 @@ export default function PostRating() {
           setRating={setValence}
         />
       </div>
+      <span
+        className={`block font-medium tracking-wide text-lg mt-5 text-center mb-3 ${timeColor}`}
+      >
+        {timeText}
+      </span>
     </div>
   );
 }
